@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 typedef int Var;
 
 struct Lit {
@@ -17,3 +18,29 @@ inline Lit mkLit(Var v, bool sign) {
 inline bool operator==(Lit a, Lit b) { return a.x == b.x; }
 inline bool operator!=(Lit a, Lit b) { return a.x != b.x; }
 
+class Clause {
+private:
+    std::vector<Lit> lits;
+
+public:
+    explicit Clause(const std::vector<Lit>& l) : lits(l) {}
+
+    bool isEmpty() const { return lits.empty(); }
+    size_t size() const { return lits.size(); }
+
+    const Lit& operator[](size_t i) const { return lits[i]; }
+    const std::vector<Lit>& literals() const { return lits; }
+
+    void print() const {
+        for (const Lit& l : lits) {
+            if (l.sign()) {
+                std::cout << "-" << l.var() << " ";
+            }
+            else {
+                std::cout << l.var() << " ";
+            }
+        }
+        std::cout << "\n";
+    }
+
+};
