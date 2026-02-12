@@ -2,7 +2,8 @@
 #include "Types.h"
 #include <vector>
 
-class Solver {
+class Solver
+{
 private:
 	int nVars;
 	int nClauses;
@@ -12,12 +13,12 @@ private:
 	std::vector<Lit> trail;
 
 public:
-	Solver() {};
-	~Solver();
+	Solver() = default;
+	~Solver() = default;
 
 	inline void setVars(int v) { nVars = v; };
 	inline int getVars() const { return nVars; };
 	inline void setClauses(int c) { nClauses = c; };
 	inline int getClauses() const { return nClauses; };
-
+	inline void addClause(Clause c) { clauses.push_back(c); };
 };
