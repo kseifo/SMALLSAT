@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <vector>
 typedef int Var;
 
 struct Lit {
