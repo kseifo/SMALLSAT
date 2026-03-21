@@ -10,18 +10,29 @@ inline void parseFile(Solver &S)
 {
     std::string line;
     std::ifstream file("problems/example.cnf");
+    int numVars, numClauses;
     if (!file.is_open())
     {
         std::cerr << "Could not open file";
         return;
     }
+
     while (std::getline(file, line))
     {
-        // Skip first, comment and empty lines
-        if (line.empty() || line[0] == 'c' || line[0] == 'p')
+        if (line.empty() || line[0] == 'c')
             continue;
-
         std::stringstream ss(line);
+
+        // Handle header
+        if (line[0] == 'p')
+        {
+            std::string tmp, format;
+            ss >> tmp >> format >> numVars >> numClauses;
+
+            S.setVars(numVars);
+            S.setNumClauses(numClauses);
+            continue;
+        }
         int lit;
         std::vector<Lit> clause;
 
@@ -42,5 +53,6 @@ inline void parseFile(Solver &S)
         S.addClause(c);
     }
 
+    S.setAssigns(numVars + 1);
     file.close();
 }

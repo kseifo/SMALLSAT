@@ -19,8 +19,10 @@ public:
 
 	inline void setVars(int v) { nVars = v; };
 	inline int getVars() const { return nVars; };
-	inline void setClauses(int c) { nClauses = c; };
+	inline void setNumClauses(int c) { nClauses = c; };
+	inline int getNumClauses() { return nClauses; };
 	inline const std::vector<Clause> &getClauses() const { return clauses; }
 	inline void addClause(Clause c) { clauses.push_back(c); };
 	int solve();
+	void setAssigns(int size);
 };
