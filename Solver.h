@@ -7,11 +7,12 @@ class Solver
 private:
 	int nVars;
 	int nClauses;
+	int currentLevel;
 
 	std::vector<Clause> clauses;
-	std::vector<Lit> decisionVars;
 	std::vector<Lit> trail;
 	std::vector<int> assigns;
+	std::vector<int> trailAtLevel;
 
 public:
 	Solver() = default;
@@ -25,4 +26,6 @@ public:
 	inline void addClause(Clause c) { clauses.push_back(c); };
 	int solve();
 	void setAssigns(int size);
+	void newDecisionLevel();
+	Lit makeDecision();
 };
