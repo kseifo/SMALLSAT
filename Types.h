@@ -42,6 +42,9 @@ public:
     const Lit &operator[](size_t i) const { return lits[i]; }
     const std::vector<Lit> &literals() const { return lits; }
 
+    const Lit *begin() const { return lits.data(); }
+    const Lit *end() const { return lits.data() + lits.size(); }
+
     void print() const
     {
         for (const Lit &l : lits)
