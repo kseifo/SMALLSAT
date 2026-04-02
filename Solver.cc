@@ -63,6 +63,23 @@ bool Solver::propagate()
     return true;
 }
 
+void Solver::undoOne()
+{
+    Lit lit = trail.back();
+    trail.pop_back();
+    assigns[lit.var()] = LitVal::UNASSIGNED;
+}
+
+void Solver::backtrackTo(int level)
+{
+    while (trail.size() > (size_t)trailAtLevel[level])
+    {
+        undoOne();
+    }
+    trailAtLevel.resize(level);
+    currentLevel = level;
+}
+
 int Solver::solve()
 {
     return 1;

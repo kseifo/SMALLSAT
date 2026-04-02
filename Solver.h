@@ -30,4 +30,6 @@ public:
 	Lit makeDecision();
 	void assign(Lit lit);
 	bool propagate();
+	void undoOne();
+	void backtrackTo(int level);
 };
