@@ -24,6 +24,45 @@ void Solver::newDecisionLevel()
     currentLevel++;
 }
 
+void Solver::assign(Lit lit)
+{
+    Var v = lit.var();
+    assigns[v] = lit.sign() ? LitVal::FALSE : LitVal::TRUE;
+    trail.push_back(lit);
+}
+
+bool Solver::propagate()
+{
+    for (auto &clause : clauses)
+    {
+        int numUnassigned = 0;
+        Lit lastUnassigned;
+        bool clauseSatisfied = false;
+
+        for (Lit lit : clause)
+        {
+            if (assigns[lit.var()] == LitVal::UNASSIGNED)
+            {
+                numUnassigned++;
+                lastUnassigned = lit;
+            }
+            else if (!lit.sign())
+            {
+                clauseSatisfied = true;
+                break;
+            }
+        }
+
+        if (clauseSatisfied)
+            continue;
+        if (numUnassigned == 0)
+            return false;
+        if (numUnassigned == 1)
+            assign(lastUnassigned);
+    }
+    return true;
+}
+
 int Solver::solve()
 {
     return 1;

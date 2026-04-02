@@ -28,4 +28,6 @@ public:
 	void setAssigns(int size);
 	void newDecisionLevel();
 	Lit makeDecision();
+	void assign(Lit lit);
+	bool propagate();
 };
