@@ -11,7 +11,7 @@ private:
 
 	std::vector<Clause> clauses;
 	std::vector<Lit> trail;
-	std::vector<int> assigns;
+	std::vector<LitVal> assigns;
 	std::vector<int> trailAtLevel;
 
 public:

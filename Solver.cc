@@ -4,14 +4,14 @@
 
 void Solver::setAssigns(int size)
 {
-    assigns.assign(size, -1);
+    assigns.assign(size, LitVal::UNASSIGNED);
 }
 
 Lit Solver::makeDecision()
 {
     for (Var v = 0; v < nVars; v++)
     {
-        if (assigns[v] == -1)
+        if (assigns[v] == LitVal::UNASSIGNED)
         {
             return mkLit(v, false);
         }
