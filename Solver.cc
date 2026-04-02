@@ -16,6 +16,7 @@ Lit Solver::makeDecision()
             return mkLit(v, false);
         }
     }
+    return Lit::undef();
 }
 
 void Solver::newDecisionLevel()
@@ -80,15 +81,45 @@ void Solver::backtrackTo(int level)
     currentLevel = level;
 }
 
-int Solver::solve()
+bool Solver::solve()
 {
-    return 1;
+    while (true)
+    { // Conflict
+        if (!propagate())
+        {
+            // If a conflict occurs at root, unsat
+            if (currentLevel == 0)
+            {
+                return false;
+            }
+            backtrackTo(currentLevel - 1);
+        }
+        else
+        {
+            Lit dec = makeDecision();
+            if (dec == Lit::undef())
+            {
+                return true;
+            }
+            newDecisionLevel();
+            assign(dec);
+        }
+    }
 }
 
 int main()
 {
-    Solver *s = new Solver();
-    parseFile(*s);
+    Solver s;
+    parseFile(s);
 
+    bool res = s.solve();
+    if (res)
+    {
+        std::cout << "SAT" << std::endl;
+    }
+    else
+    {
+        std::cout << "UNSAT" << std::endl;
+    }
     return 0;
 }
