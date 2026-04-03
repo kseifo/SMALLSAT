@@ -30,7 +30,6 @@ inline void parseFile(Solver &S)
             ss >> tmp >> format >> numVars >> numClauses;
 
             S.setVars(numVars);
-            S.setNumClauses(numClauses);
             continue;
         }
         int lit;
@@ -43,7 +42,7 @@ inline void parseFile(Solver &S)
                 break;
 
             // Construct lit
-            int var = std::abs(lit);
+            int var = std::abs(lit) - 1;
             bool neg = (lit < 0);
 
             clause.push_back(mkLit(var, neg));
@@ -53,6 +52,6 @@ inline void parseFile(Solver &S)
         S.addClause(c);
     }
 
-    S.setAssigns(numVars + 1);
+    S.setAssigns(numVars);
     file.close();
 }
