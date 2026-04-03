@@ -11,7 +11,7 @@ struct Lit
     bool sign() const { return x & 1; }
 
     Lit operator~() const { return Lit{x ^ 1}; }
-    static Lit undef() { return Lit{0}; }
+    static Lit undef() { return Lit{-1}; }
 };
 
 enum class LitVal

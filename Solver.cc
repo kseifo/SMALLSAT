@@ -47,7 +47,7 @@ bool Solver::propagate()
                 numUnassigned++;
                 lastUnassigned = lit;
             }
-            else if (!lit.sign())
+            else if ((assigns[lit.var()] == LitVal::TRUE && !lit.sign()) || (assigns[lit.var()] == LitVal::FALSE && lit.sign()))
             {
                 clauseSatisfied = true;
                 break;
@@ -59,7 +59,10 @@ bool Solver::propagate()
         if (numUnassigned == 0)
             return false;
         if (numUnassigned == 1)
+        {
             assign(lastUnassigned);
+            return propagate();
+        }
     }
     return true;
 }
