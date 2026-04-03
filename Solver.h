@@ -31,4 +31,5 @@ public:
 	bool propagate();
 	void undoOne();
 	void backtrackTo(int level);
+	bool isLitTrue(Lit lit);
 };

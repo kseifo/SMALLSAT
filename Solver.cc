@@ -7,6 +7,11 @@ void Solver::setAssigns(int size)
     assigns.assign(size, LitVal::UNASSIGNED);
 }
 
+bool Solver::isLitTrue(Lit lit)
+{
+    return (assigns[lit.var()] == LitVal::TRUE && !lit.sign()) || (assigns[lit.var()] == LitVal::FALSE && lit.sign());
+}
+
 Lit Solver::makeDecision()
 {
     for (Var v = 0; v < nVars; v++)
@@ -47,7 +52,7 @@ bool Solver::propagate()
                 numUnassigned++;
                 lastUnassigned = lit;
             }
-            else if ((assigns[lit.var()] == LitVal::TRUE && !lit.sign()) || (assigns[lit.var()] == LitVal::FALSE && lit.sign()))
+            else if (isLitTrue(lit))
             {
                 clauseSatisfied = true;
                 break;
