@@ -13,6 +13,7 @@ private:
 	std::vector<Lit> trail;
 	std::vector<LitVal> assigns;
 	std::vector<int> trailAtLevel;
+	std::vector<Lit> decisionStack;
 
 public:
 	Solver() = default;

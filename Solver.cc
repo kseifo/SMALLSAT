@@ -14,13 +14,15 @@ bool Solver::isLitTrue(Lit lit)
 
 Lit Solver::makeDecision()
 {
+    // Assign negative to all decision variables
     for (Var v = 0; v < nVars; v++)
     {
         if (assigns[v] == LitVal::UNASSIGNED)
         {
-            return mkLit(v, false);
+            return mkLit(v, 1);
         }
     }
+    // If all assigned, return undefined to indicate sat
     return Lit::undef();
 }
 
@@ -63,6 +65,7 @@ bool Solver::propagate()
             continue;
         if (numUnassigned == 0)
             return false;
+        // Naive recursive approach
         if (numUnassigned == 1)
         {
             assign(lastUnassigned);
@@ -92,25 +95,60 @@ void Solver::backtrackTo(int level)
 bool Solver::solve()
 {
     while (true)
-    { // Conflict
+    {
         if (!propagate())
         {
-            // If a conflict occurs at root, unsat
+            // Conflict at root is unsat
             if (currentLevel == 0)
-            {
                 return false;
-            }
+
+            // Backtrack to the previous decision level first
             backtrackTo(currentLevel - 1);
+
+            Lit top = decisionStack.back();
+            decisionStack.pop_back();
+
+            if (top.sign())
+            {
+                // Was negative branch, try positive
+                Lit postop = mkLit(top.var(), 0);
+                decisionStack.push_back(postop);
+                newDecisionLevel();
+                assign(postop);
+            }
+            else
+            {
+                // Was positive branch so both branches exhausted, backtrack
+                while (!decisionStack.empty() && !decisionStack.back().sign())
+                {
+                    decisionStack.pop_back();
+                    backtrackTo(currentLevel - 1);
+                }
+
+                if (decisionStack.empty())
+                    return false;
+
+                // Flip the last negative decision to positive
+                Lit top2 = decisionStack.back();
+                decisionStack.pop_back();
+                Lit postop = mkLit(top2.var(), 0);
+                decisionStack.push_back(postop);
+                assign(postop);
+                newDecisionLevel();
+            }
         }
         else
         {
+            // Make a new decision
             Lit dec = makeDecision();
+
+            // If a complete assignment is made and no conflict occurs, return sat
             if (dec == Lit::undef())
-            {
                 return true;
-            }
+
             newDecisionLevel();
             assign(dec);
+            decisionStack.push_back(dec);
         }
     }
 }
