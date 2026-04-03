@@ -133,8 +133,8 @@ bool Solver::solve()
                 decisionStack.pop_back();
                 Lit postop = mkLit(top2.var(), 0);
                 decisionStack.push_back(postop);
-                assign(postop);
                 newDecisionLevel();
+                assign(postop);
             }
         }
         else
@@ -153,6 +153,16 @@ bool Solver::solve()
     }
 }
 
+void Solver::printTrail()
+{
+    std::cout << trail.size() << "\n";
+
+    for (Lit l : trail)
+    {
+        std::cout << l.var() + 1 << "->" << (int)assigns[l.var()] << "\n";
+    }
+}
+
 int main()
 {
     Solver s;
@@ -162,10 +172,9 @@ int main()
     if (res)
     {
         std::cout << "SAT" << std::endl;
+        s.printTrail();
     }
     else
-    {
         std::cout << "UNSAT" << std::endl;
-    }
     return 0;
 }
