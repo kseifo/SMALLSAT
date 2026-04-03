@@ -7,7 +7,7 @@ class Solver
 private:
 	int nVars;
 	int nClauses;
-	int currentLevel;
+	int currentLevel = 0;
 
 	std::vector<Clause> clauses;
 	std::vector<Lit> trail;
