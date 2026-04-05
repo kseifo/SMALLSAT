@@ -164,10 +164,17 @@ void Solver::printTrail()
     }
 }
 
-int main()
+int main(int argc, char *argv[])
 {
     Solver s;
-    parseFile(s);
+
+    if (argc < 2)
+    {
+        std::cerr << "Usage: ./solver <input.cnf>" << std::endl;
+        return 1;
+    }
+
+    parseFile(s, argv[1]);
 
     bool res = s.solve();
     if (res)

@@ -6,15 +6,15 @@
 #include <vector>
 #include <iostream>
 #include <sstream>
-inline void parseFile(Solver &S)
+inline void parseFile(Solver &S, std::string problemName)
 {
     std::string line;
-    std::ifstream file("problems/example.cnf");
+    std::ifstream file(problemName);
     int numVars, numClauses;
     if (!file.is_open())
     {
-        std::cerr << "Could not open file";
-        return;
+        std::cerr << "Could not open file: " << problemName << std::endl;
+        exit(1);
     }
 
     while (std::getline(file, line))
