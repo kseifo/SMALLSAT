@@ -94,6 +94,9 @@ void Solver::backtrackTo(int level)
 
 bool Solver::solve()
 {
+    // At decision level 0, the trail is empty
+    trailAtLevel.push_back(0);
+
     while (true)
     {
         if (!propagate())
@@ -155,8 +158,6 @@ bool Solver::solve()
 
 void Solver::printTrail()
 {
-    std::cout << trail.size() << "\n";
-
     for (Lit l : trail)
     {
         std::cout << l.var() + 1 << "->" << (int)assigns[l.var()] << "\n";
