@@ -33,5 +33,5 @@ public:
 	void undoOne();
 	void backtrackTo(int level);
 	bool isLitTrue(Lit lit);
-	void printTrail();
+	void printModel();
 };

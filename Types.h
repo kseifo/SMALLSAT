@@ -14,7 +14,7 @@ struct Lit
     static Lit undef() { return Lit{-1}; }
 };
 
-enum class LitVal
+enum LitVal
 {
     UNASSIGNED = 0,
     FALSE = -1,

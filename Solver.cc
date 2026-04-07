@@ -156,11 +156,11 @@ bool Solver::solve()
     }
 }
 
-void Solver::printTrail()
+void Solver::printModel()
 {
-    for (Lit l : trail)
+    for (int i = 0; i < nVars; ++i)
     {
-        std::cout << l.var() + 1 << "->" << (int)assigns[l.var()] << "\n";
+        std::cout << i + 1 << "->" << (assigns[i] == LitVal::TRUE ? "TRUE" : "FALSE") << std::endl;
     }
 }
 
@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
     if (res)
     {
         std::cout << "SAT" << std::endl;
-        s.printTrail();
+        s.printModel();
     }
     else
         std::cout << "UNSAT" << std::endl;
