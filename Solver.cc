@@ -84,11 +84,11 @@ void Solver::undoOne()
 
 void Solver::backtrackTo(int level)
 {
-    while (trail.size() > (size_t)trailAtLevel[level + 1])
+    while (trail.size() > (size_t)trailAtLevel[level])
     {
         undoOne();
     }
-    trailAtLevel.resize(level + 1);
+    trailAtLevel.resize(level);
     currentLevel = level;
 }
 
@@ -101,27 +101,44 @@ bool Solver::solve()
     {
         if (!propagate())
         {
-            // Pop decisions and undo each level until a negative literal is found
-            Lit found = Lit::undef();
-            while (!decisionStack.empty())
-            {
-                Lit top = decisionStack.back();
-                decisionStack.pop_back();
-                backtrackTo(currentLevel - 1);
-                if (top.sign())
-                {
-                    found = top;
-                    break;
-                }
-            }
-
-            if (found == Lit::undef())
+            // Conflict at root is unsat
+            if (currentLevel == 0)
                 return false;
 
-            Lit flipped = mkLit(found.var(), 0);
-            decisionStack.push_back(flipped);
-            newDecisionLevel();
-            assign(flipped);
+            // Backtrack to the previous decision level first
+            backtrackTo(currentLevel - 1);
+
+            Lit top = decisionStack.back();
+            decisionStack.pop_back();
+
+            if (top.sign())
+            {
+                // Was negative branch, try positive
+                Lit postop = mkLit(top.var(), 0);
+                decisionStack.push_back(postop);
+                newDecisionLevel();
+                assign(postop);
+            }
+            else
+            {
+                // Was positive branch so both branches exhausted, backtrack
+                while (!decisionStack.empty() && !decisionStack.back().sign())
+                {
+                    decisionStack.pop_back();
+                    backtrackTo(currentLevel - 1);
+                }
+
+                if (decisionStack.empty())
+                    return false;
+
+                // Flip the last negative decision to positive
+                Lit top2 = decisionStack.back();
+                decisionStack.pop_back();
+                Lit postop = mkLit(top2.var(), 0);
+                decisionStack.push_back(postop);
+                newDecisionLevel();
+                assign(postop);
+            }
         }
         else
         {
@@ -158,11 +175,6 @@ int main(int argc, char *argv[])
     }
 
     parseFile(s, argv[1]);
-
-    for (auto c : s.getClauses())
-    {
-        c.print();
-    }
 
     bool res = s.solve();
     if (res)
