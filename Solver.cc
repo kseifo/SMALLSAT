@@ -84,11 +84,11 @@ void Solver::undoOne()
 
 void Solver::backtrackTo(int level)
 {
-    while (trail.size() > (size_t)trailAtLevel[level])
+    while (trail.size() > (size_t)trailAtLevel[level + 1])
     {
         undoOne();
     }
-    trailAtLevel.resize(level);
+    trailAtLevel.resize(level + 1);
     currentLevel = level;
 }
 
@@ -105,40 +105,28 @@ bool Solver::solve()
             if (currentLevel == 0)
                 return false;
 
-            // Backtrack to the previous decision level first
-            backtrackTo(currentLevel - 1);
-
-            Lit top = decisionStack.back();
-            decisionStack.pop_back();
-
-            if (top.sign())
+            // Pop decisions, undo each level until either:
+            // Negative literal is found or stack is exhausted
+            Lit found = Lit::undef();
+            while (!decisionStack.empty())
             {
-                // Was negative branch, try positive
-                Lit postop = mkLit(top.var(), 0);
-                decisionStack.push_back(postop);
-                newDecisionLevel();
-                assign(postop);
-            }
-            else
-            {
-                // Was positive branch so both branches exhausted, backtrack
-                while (!decisionStack.empty() && !decisionStack.back().sign())
-                {
-                    decisionStack.pop_back();
-                    backtrackTo(currentLevel - 1);
-                }
-
-                if (decisionStack.empty())
-                    return false;
-
-                // Flip the last negative decision to positive
-                Lit top2 = decisionStack.back();
+                Lit top = decisionStack.back();
                 decisionStack.pop_back();
-                Lit postop = mkLit(top2.var(), 0);
-                decisionStack.push_back(postop);
-                newDecisionLevel();
-                assign(postop);
+                backtrackTo(currentLevel - 1);
+                if (top.sign())
+                {
+                    found = top;
+                    break;
+                }
             }
+
+            if (found == Lit::undef())
+                return false;
+
+            Lit flipped = mkLit(found.var(), 0);
+            decisionStack.push_back(flipped);
+            newDecisionLevel();
+            assign(flipped);
         }
         else
         {
