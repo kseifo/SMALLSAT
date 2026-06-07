@@ -1,7 +1,7 @@
 #pragma once
 #include "Types.h"
 #include <vector>
-
+#include <queue>
 class Solver
 {
 private:
@@ -14,6 +14,9 @@ private:
 	std::vector<LitVal> assigns;
 	std::vector<int> trailAtLevel;
 	std::vector<Lit> decisionStack;
+
+	std::vector<std::vector<int>> watches;
+	std::queue<Lit> propQueue;
 
 public:
 	Solver() = default;
@@ -34,4 +37,5 @@ public:
 	void backtrackTo(int level);
 	bool isLitTrue(Lit lit);
 	void printModel();
+	void initializeWatches();
 };

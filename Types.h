@@ -7,6 +7,7 @@ struct Lit
 {
     int x;
 
+    int rep() const { return x; }
     Var var() const { return x >> 1; }
     bool sign() const { return x & 1; }
 
@@ -41,6 +42,7 @@ public:
     size_t size() const { return lits.size(); }
 
     const Lit &operator[](size_t i) const { return lits[i]; }
+    Lit &operator[](size_t i) { return lits[i]; }
     const std::vector<Lit> &literals() const { return lits; }
 
     const Lit *begin() const { return lits.data(); }

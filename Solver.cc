@@ -7,6 +7,23 @@ void Solver::setAssigns(int size)
     assigns.assign(size, LitVal::UNASSIGNED);
 }
 
+void Solver::initializeWatches()
+{
+    watches.resize(2 * nVars);
+    for (int i = 0; i < (int)clauses.size(); i++)
+    {
+        if (clauses[i].size() == 1)
+        {
+            propQueue.push(clauses[i][0]);
+        }
+        else
+        {
+            watches[clauses[i][0].rep()].push_back(i);
+            watches[clauses[i][1].rep()].push_back(i);
+        }
+    }
+}
+
 bool Solver::isLitTrue(Lit lit)
 {
     return (assigns[lit.var()] == LitVal::TRUE && !lit.sign()) || (assigns[lit.var()] == LitVal::FALSE && lit.sign());

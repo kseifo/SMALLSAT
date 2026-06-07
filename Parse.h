@@ -53,5 +53,6 @@ inline void parseFile(Solver &S, std::string problemName)
     }
 
     S.setAssigns(numVars);
+    S.initializeWatches();
     file.close();
 }
